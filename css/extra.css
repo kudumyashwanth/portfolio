@@ -135,7 +135,9 @@ body.is-ready .hero__title .char{ transform:translateY(0); }
 .modal.is-open{ opacity:1; visibility:visible; }
 .modal__backdrop{ position:absolute; inset:0; background:rgba(5,6,12,0.72); backdrop-filter:blur(8px); }
 .modal__panel{
-  position:relative; z-index:1; width:min(92vw,1000px); max-height:88vh; overflow:auto;
+  position:relative; z-index:1; width:min(92vw,1000px); max-height:88vh;
+  overflow-y:auto; overflow-x:hidden;
+  -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y;
   background:var(--bg-2); border:1px solid var(--line); border-radius:12px;
   display:grid; grid-template-columns:0.85fr 1.15fr; gap:0;
   transform:translateY(40px) scale(0.98); transition:transform .6s var(--ease);
