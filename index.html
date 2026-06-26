@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kudum Yashwanth — VLSI / RISC-V SoC / Embedded AI</title>
+  <meta name="description" content="Kudum Yashwanth — Electronics & Communication Engineer specializing in Digital VLSI, RISC-V SoC integration, RTL-to-GDSII ASIC physical design, and Embedded AI. Designer of Aurora v1." />
+  <meta name="author" content="Kudum Yashwanth" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Kudum Yashwanth — Silicon Architect" />
+  <meta property="og:description" content="VLSI · RISC-V SoC · RTL-to-GDSII · Embedded AI" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/og.svg" />
+  <meta name="theme-color" content="#0b0d16" />
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/extra.css" />
+
+  <!-- Three.js + GSAP + Lenis via import map / CDN -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body class="is-loading">
+
+  <!-- ░░ PRELOADER ░░ -->
+  <div class="preloader" id="preloader">
+    <div class="preloader__inner">
+      <div class="preloader__label">
+        <span class="mono">[ INITIALIZING SILICON ]</span>
+      </div>
+      <div class="preloader__count"><span id="count">0</span><span class="pct">%</span></div>
+      <div class="preloader__bar"><span class="preloader__bar-fill" id="barFill"></span></div>
+      <div class="preloader__status mono" id="loadStatus">booting fabric…</div>
+
+      <div class="preloader__enter" id="preEnter">
+        <div class="preloader__enter-name">KUDUM YASHWANTH</div>
+        <button class="preloader__enter-btn" id="enterBtn" data-cursor="link">
+          <span class="preloader__enter-ring"></span>
+          <span>ENTER</span>
+          <span class="mono preloader__enter-sub">with sound ♪</span>
+        </button>
+        <button class="preloader__enter-mute mono" id="enterMute" data-cursor="link">enter silently →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ CUSTOM CURSOR ░░ -->
+  <div class="cursor" id="cursor"><span class="cursor__dot"></span></div>
+  <canvas class="cursor-trail" id="cursorTrail"></canvas>
+
+  <canvas class="spark" id="spark"></canvas>
+
+  <!-- ░░ SCROLL PROGRESS ░░ -->
+  <div class="scrollbar"><span class="scrollbar__fill" id="scrollFill"></span></div>
+
+  <!-- ░░ HUD INTERFACE LAYER ░░ -->
+  <div class="frame" aria-hidden="true">
+    <span class="frame__c frame__c--tl"></span><span class="frame__c frame__c--tr"></span>
+    <span class="frame__c frame__c--bl"></span><span class="frame__c frame__c--br"></span>
+  </div>
+  <div class="hud mono" aria-hidden="true">
+    <div class="hud__row"><span>FPS</span><b id="hudFps">--</b></div>
+    <div class="hud__row"><span>SCROLL</span><b id="hudScroll">0%</b></div>
+    <div class="hud__row"><span>CURSOR</span><b id="hudPos">0,0</b></div>
+    <div class="hud__row"><span>RENDER</span><b id="hudGpu">WEBGL</b></div>
+    <div class="hud__row hud__row--hint"><span id="hudHint">[1–6] jump · [↑↓↓…] ?</span></div>
+  </div>
+
+  <!-- ░░ OVERCLOCK TOAST ░░ -->
+  <div class="toast mono" id="toast"></div>
+
+  <!-- ░░ SIDE RAILS ░░ -->
+  <aside class="rail rail--left mono" aria-hidden="true">
+    <span class="rail__sec" id="railSection">00 / hero</span>
+  </aside>
+  <aside class="rail rail--right mono">
+    <a href="https://www.linkedin.com/in/yashwanth-kudum-489685289" target="_blank" rel="noopener" data-cursor="link">LN</a>
+    <a href="https://github.com/kudumyashwanth" target="_blank" rel="noopener" data-cursor="link">GH</a>
+    <a href="mailto:kudumyashwanth@gmail.com" data-cursor="link">@</a>
+    <span class="rail__line"></span>
+    <span class="rail__clock" id="clock">--:--:--</span>
+  </aside>
+
+  <!-- ░░ WEBGL CANVAS ░░ -->
+  <canvas id="gl"></canvas>
+  <div class="grain"></div>
+  <div class="vignette"></div>
+  <div class="scrim"></div>
+
+  <!-- ░░ SOUND TOGGLE ░░ -->
+  <button class="sound-toggle is-off" id="soundToggle" data-cursor="link" aria-label="Toggle sound">
+    <span class="sound-toggle__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="sound-toggle__label mono">sound off</span>
+  </button>
+
+  <!-- ░░ NAV ░░ -->
+  <header class="nav" id="nav">
+    <a href="#top" class="nav__brand" data-cursor="link">
+      <span class="nav__brand-mark">KY</span>
+      <span class="nav__brand-sub mono">silicon&nbsp;architect</span>
+    </a>
+    <nav class="nav__links mono">
+      <a href="#work" data-cursor="link"><span>01</span> work</a>
+      <a href="#about" data-cursor="link"><span>02</span> about</a>
+      <a href="#stack" data-cursor="link"><span>03</span> stack</a>
+      <a href="#contact" data-cursor="link"><span>04</span> contact</a>
+    </nav>
+    <a href="mailto:kudumyashwanth@gmail.com" class="nav__cta mono" data-cursor="link">get in touch</a>
+  </header>
+
+  <main id="top" data-scroll-container>
+
+    <!-- ░░ HERO ░░ -->
+    <section class="hero" id="hero">
+      <div class="hero__meta mono">
+        <span>EST. BENGALURU · IN</span>
+        <span class="hero__meta-dot"></span>
+        <span>B.E. ECE · 2022–2026</span>
+      </div>
+
+      <h1 class="hero__title">
+        <span class="line"><span class="word" data-reveal>KUDUM</span></span>
+        <span class="line"><span class="word" data-reveal>YASHWANTH</span></span>
+      </h1>
+
+      <div class="hero__roles mono">
+        <span class="role" data-reveal>VLSI&nbsp;DESIGN</span>
+        <span class="role-sep">/</span>
+        <span class="role" data-reveal>RISC-V&nbsp;SoC</span>
+        <span class="role-sep">/</span>
+        <span class="role" data-reveal>RTL→GDSII</span>
+        <span class="role-sep">/</span>
+        <span class="role" data-reveal>EMBEDDED&nbsp;AI</span>
+      </div>
+
+      <p class="hero__lead" data-reveal>
+        I design and sign off silicon. From SystemVerilog RTL to a device-perfect
+        GDSII layout — including <em>Aurora&nbsp;v1</em>, a multi-clock RISC-V&nbsp;+&nbsp;AI
+        accelerator System-on-Chip taken through the complete flow on SkyWater&nbsp;Sky130.
+      </p>
+
+      <a href="#work" class="hero__scroll mono" data-cursor="link">
+        <span>scroll to enter</span>
+        <span class="hero__scroll-line"></span>
+      </a>
+
+      <div class="hero__ticker mono" aria-hidden="true">
+        <div class="hero__ticker-track">
+          <span>WNS/TNS = 0</span><span>·</span><span>137,562 = 137,562 DEVICES</span><span>·</span>
+          <span>CLEAN DRC</span><span>·</span><span>DEVICE-PERFECT LVS</span><span>·</span>
+          <span>41.25 mm² DIE</span><span>·</span><span>~130k STD CELLS</span><span>·</span>
+          <span>100% OPEN-SOURCE FLOW</span><span>·</span>
+          <span>WNS/TNS = 0</span><span>·</span><span>137,562 = 137,562 DEVICES</span><span>·</span>
+          <span>CLEAN DRC</span><span>·</span><span>DEVICE-PERFECT LVS</span><span>·</span>
+          <span>41.25 mm² DIE</span><span>·</span><span>~130k STD CELLS</span><span>·</span>
+          <span>100% OPEN-SOURCE FLOW</span><span>·</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ ABOUT ░░ -->
+    <section class="about" id="about">
+      <span class="section__index mono">02 — about</span>
+      <div class="about__grid">
+        <h2 class="about__statement">
+          <span data-reveal>I build the layer most people</span>
+          <span data-reveal>never see — the one where</span>
+          <span data-reveal><em>logic becomes physics.</em></span>
+        </h2>
+        <div class="about__body">
+          <p data-reveal>
+            Electronics &amp; Communication Engineer with a strong foundation in digital VLSI,
+            RISC-V SoC integration, ASIC physical design, and embedded AI systems. I work
+            end-to-end: SystemVerilog RTL, AMBA AXI4/AHB/APB fabrics, UVM-style verification,
+            and the full Cadence (Genus / Innovus / Xcelium) and OpenLane toolchains.
+          </p>
+          <p data-reveal>
+            I also live at the hardware–software boundary — AI inference acceleration
+            (TensorRT, YOLOv8), ROS&nbsp;2 robotics with sensor fusion, and real-time embedded
+            firmware. If it spans transistors to tensors, it's my home turf.
+          </p>
+          <div class="about__stats">
+            <div class="stat" data-reveal><span class="stat__num" data-count="5">0</span><span class="stat__label mono">silicon-grade projects</span></div>
+            <div class="stat" data-reveal><span class="stat__num" data-count="2">0</span><span class="stat__label mono">full RTL→GDSII tapeouts</span></div>
+            <div class="stat" data-reveal><span class="stat__num" data-count="0" data-suffix="∅">0</span><span class="stat__label mono">timing violations (WNS/TNS)</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ WORK ░░ -->
+    <section class="work" id="work">
+      <div class="work__head">
+        <span class="section__index mono">01 — selected work</span>
+        <h2 class="work__title" data-reveal>Things I've taped&nbsp;out<br/>&amp; brought to&nbsp;life.</h2>
+        <div class="work__filter mono" id="workFilter">
+          <button class="filter-btn is-active" data-filter="all" data-cursor="link">all <span>05</span></button>
+          <button class="filter-btn" data-filter="silicon" data-cursor="link">silicon <span>03</span></button>
+          <button class="filter-btn" data-filter="ai" data-cursor="link">ai / ml <span>02</span></button>
+          <button class="filter-btn" data-filter="embedded" data-cursor="link">embedded <span>02</span></button>
+        </div>
+      </div>
+
+      <div class="projects" id="projects">
+
+        <article class="project" data-cursor="view" data-accent="#7aa2f7" data-id="aurora" data-cat="silicon ai">
+          <div class="project__index mono">01</div>
+          <div class="project__main">
+            <h3 class="project__name">Aurora v1</h3>
+            <p class="project__tag mono">RISC-V + AI ACCELERATOR SoC · RTL-to-GDSII</p>
+            <p class="project__desc">
+              A multi-clock System-on-Chip pairing a Rocket RV64IMAC CPU tile with a 4×4
+              systolic int16 matrix-multiply accelerator over an 8×8 AXI4 crossbar — carried
+              through the complete flow on Sky130. Multi-corner timing closure (WNS/TNS&nbsp;=&nbsp;0),
+              clean DRC, device-perfect LVS (137,562&nbsp;=&nbsp;137,562 devices) on a 41.25&nbsp;mm² die.
+            </p>
+            <ul class="project__meta mono">
+              <li>SystemVerilog</li><li>AMBA AXI4</li><li>Async-FIFO CDC</li><li>OpenLane/OpenROAD</li><li>Sky130</li>
+            </ul>
+          </div>
+          <div class="project__thumb" data-die="1" aria-hidden="true"></div>
+          <div class="project__line"></div>
+        </article>
+
+        <article class="project" data-cursor="view" data-accent="#bb9af7" data-id="neural" data-cat="silicon ai">
+          <div class="project__index mono">02</div>
+          <div class="project__main">
+            <h3 class="project__name">Neural Accelerator</h3>
+            <p class="project__tag mono">CNN INFERENCE ASIC · AXI4-STREAM</p>
+            <p class="project__desc">
+              A modular CNN inference accelerator — preprocessing, a sequential MAC convolution
+              engine, ReLU, pooling, and a fully-connected layer — through full RTL-to-GDSII.
+              32-bit AXI4-Stream with backpressure-aware stalling. 100&nbsp;MHz target
+              (1.08&nbsp;ns critical path), WNS/TNS&nbsp;=&nbsp;0, 4.0&nbsp;mm² die, 0 DRC, LVS clean.
+            </p>
+            <ul class="project__meta mono">
+              <li>SystemVerilog</li><li>AXI4-Stream</li><li>Cadence Xcelium</li><li>Sequential MAC</li><li>Sky130</li>
+            </ul>
+          </div>
+          <div class="project__thumb" data-die="2" aria-hidden="true"></div>
+          <div class="project__line"></div>
+        </article>
+
+        <article class="project" data-cursor="view" data-accent="#7dcfff" data-id="rover" data-cat="ai embedded">
+          <div class="project__index mono">03</div>
+          <div class="project__main">
+            <h3 class="project__name">The Thousand Sunny</h3>
+            <p class="project__tag mono">AUTONOMOUS EXPLORATION ROVER · ROS 2</p>
+            <p class="project__desc">
+              An AI-driven 6WD rover built around a Jetson Orin NX. ROS&nbsp;2 Humble navigation
+              with SLAM (RTAB-Map, Cartographer) and IMU + LiDAR + RGBD + EKF sensor fusion.
+              YOLOv8 and DeepLabV3+ optimized via TensorRT for real-time inference, validated
+              in NVIDIA Isaac Sim, with a Flask telemetry dashboard over LoRa + Wi-Fi.
+            </p>
+            <ul class="project__meta mono">
+              <li>ROS 2 Humble</li><li>Jetson Orin NX</li><li>SLAM</li><li>TensorRT</li><li>Isaac Sim</li>
+            </ul>
+          </div>
+          <div class="project__thumb" data-die="3" aria-hidden="true"></div>
+          <div class="project__line"></div>
+        </article>
+
+        <article class="project" data-cursor="view" data-accent="#9ece6a" data-id="assistant" data-cat="embedded">
+          <div class="project__index mono">04</div>
+          <div class="project__main">
+            <h3 class="project__name">Pocket Assistant</h3>
+            <p class="project__tag mono">VOICE-CONTROLLED AI · ESP32 EMBEDDED</p>
+            <p class="project__desc">
+              A portable voice assistant on an ESP32 with an I²S microphone and audio amplifier.
+              Interrupt-driven firmware for button-triggered capture, buffered Wi-Fi API calls
+              for AI responses, and a real-time capture→process→playback pipeline. Reworked an
+              open-source PCB for power delivery, signal integrity, and standalone recovery.
+            </p>
+            <ul class="project__meta mono">
+              <li>ESP32 (C/C++)</li><li>I²S Audio</li><li>Interrupt FW</li><li>PCB Design</li><li>Wi-Fi API</li>
+            </ul>
+          </div>
+          <div class="project__thumb" data-die="4" aria-hidden="true"></div>
+          <div class="project__line"></div>
+        </article>
+
+        <article class="project" data-cursor="view" data-accent="#f7768e" data-id="bridge" data-cat="silicon">
+          <div class="project__index mono">05</div>
+          <div class="project__main">
+            <h3 class="project__name">AHB → APB Bridge</h3>
+            <p class="project__tag mono">AMBA 4 PROTOCOL BRIDGE · VERIFICATION</p>
+            <p class="project__desc">
+              FSM-based protocol translation between a high-performance AHB bus and a low-speed
+              APB bus, with wait-state handling and correct HADDR / HWRITE / HREADY / PSEL /
+              PENABLE / PREADY sequencing. Verified with a constrained-random, assertion-driven
+              testbench — full functional coverage, zero handshake violations.
+            </p>
+            <ul class="project__meta mono">
+              <li>SystemVerilog</li><li>AMBA 4</li><li>UVM-style TB</li><li>Functional Coverage</li><li>Assertions</li>
+            </ul>
+          </div>
+          <div class="project__thumb" data-die="5" aria-hidden="true"></div>
+          <div class="project__line"></div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ░░ ANATOMY OF AURORA — interactive floorplan ░░ -->
+    <section class="anatomy" id="anatomy">
+      <span class="section__index mono">01.5 — anatomy of aurora v1</span>
+      <div class="anatomy__grid">
+        <div class="anatomy__intro">
+          <h2 data-reveal>The floorplan,<br/><em>block by block.</em></h2>
+          <p data-reveal>Hover the die. This is the multi-clock SoC I integrated and signed off — a Rocket RV64IMAC tile and a 4×4 systolic accelerator stitched together over an 8×8 AXI4 crossbar, with asynchronous-FIFO CDC bridging the two clock domains.</p>
+          <div class="anatomy__readout mono" id="floorReadout">
+            <span class="anatomy__readout-key">SELECT A BLOCK</span>
+            <span class="anatomy__readout-val">137,562 = 137,562 devices · clean LVS</span>
+          </div>
+        </div>
+
+        <div class="anatomy__die" data-reveal>
+          <svg viewBox="0 0 400 400" class="floorplan" id="floorplan" role="img" aria-label="Aurora v1 floorplan">
+            <defs>
+              <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="6" stroke="currentColor" stroke-width="0.6" opacity="0.25"/>
+              </pattern>
+            </defs>
+            <rect x="6" y="6" width="388" height="388" rx="6" class="fp-die"/>
+            <rect x="20" y="20" width="360" height="360" rx="3" class="fp-core"/>
+
+            <g class="fp-block" data-name="CPU TILE" data-info="Rocket RV64IMAC · 33 MHz domain · hardened as a reusable AXI4 macro via TileLink→AXI4">
+              <rect x="34" y="34" width="150" height="150" rx="2"/><text x="109" y="115">CPU · RV64</text>
+            </g>
+            <g class="fp-block" data-name="AI ACCELERATOR" data-info="4×4 systolic int16 matrix-multiply array · 50 MHz domain · streaming MAC datapath">
+              <rect x="216" y="34" width="150" height="150" rx="2"/><text x="291" y="115">4×4 ACCEL</text>
+            </g>
+            <g class="fp-block fp-bus" data-name="AXI4 CROSSBAR" data-info="8×8 AXI4 crossbar fabric · ready/valid · backpressure-aware interconnect">
+              <rect x="34" y="196" width="332" height="40" rx="2"/><text x="200" y="219">8×8 AXI4 CROSSBAR</text>
+            </g>
+            <g class="fp-block" data-name="CDC BRIDGES" data-info="Dual asynchronous-FIFO clock-domain-crossing bridges · 33 MHz ↔ 50 MHz">
+              <rect x="34" y="248" width="100" height="60" rx="2"/><text x="84" y="282">CDC FIFO</text>
+            </g>
+            <g class="fp-block" data-name="SRAM" data-info="On-chip SRAM macro · AXI4 slave">
+              <rect x="146" y="248" width="108" height="60" rx="2"/><text x="200" y="282">SRAM</text>
+            </g>
+            <g class="fp-block" data-name="BOOT ROM" data-info="Boot ROM · holds the bring-up + matmul test program">
+              <rect x="266" y="248" width="100" height="60" rx="2"/><text x="316" y="282">BOOT ROM</text>
+            </g>
+            <g class="fp-block" data-name="UART" data-info="UART peripheral · result read-back over AXI">
+              <rect x="34" y="320" width="78" height="46" rx="2"/><text x="73" y="346">UART</text>
+            </g>
+            <g class="fp-block" data-name="GPIO" data-info="GPIO controller · APB-class peripheral">
+              <rect x="124" y="320" width="78" height="46" rx="2"/><text x="163" y="346">GPIO</text>
+            </g>
+            <g class="fp-block" data-name="TIMER" data-info="Programmable timer">
+              <rect x="214" y="320" width="78" height="46" rx="2"/><text x="253" y="346">TIMER</text>
+            </g>
+            <g class="fp-block" data-name="PLIC" data-info="Platform-level interrupt controller">
+              <rect x="304" y="320" width="62" height="46" rx="2"/><text x="335" y="346">PLIC</text>
+            </g>
+          </svg>
+          <div class="floor-tip mono" id="floorTip"></div>
+        </div>
+      </div>
+
+      <!-- sign-off metrics -->
+      <div class="metrics" id="metrics">
+        <div class="metric" data-reveal>
+          <div class="metric__top mono"><span>SETUP SLACK · WNS</span><span class="metric__val" data-metric="0" data-suffix=" ns">0</span></div>
+          <div class="metric__bar"><span style="--w:100%"></span></div>
+          <div class="metric__note mono">timing closed · slow/typ/fast corners</div>
+        </div>
+        <div class="metric" data-reveal>
+          <div class="metric__top mono"><span>LVS DEVICE MATCH</span><span class="metric__val" data-metric="100" data-suffix=" %">0</span></div>
+          <div class="metric__bar"><span style="--w:100%"></span></div>
+          <div class="metric__note mono">137,562 = 137,562 · device-perfect</div>
+        </div>
+        <div class="metric" data-reveal>
+          <div class="metric__top mono"><span>DRC VIOLATIONS</span><span class="metric__val" data-metric="0">0</span></div>
+          <div class="metric__bar"><span style="--w:100%"></span></div>
+          <div class="metric__note mono">clean on full-chip Sky130 layout</div>
+        </div>
+        <div class="metric" data-reveal>
+          <div class="metric__top mono"><span>OPEN-SOURCE FLOW</span><span class="metric__val" data-metric="100" data-suffix=" %">0</span></div>
+          <div class="metric__bar"><span style="--w:100%"></span></div>
+          <div class="metric__note mono">Verilator · Yosys · OpenLane · Magic · netgen</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ INSPECT THE DIE — orbitable 3D chip ░░ -->
+    <section class="chip3d" id="chip">
+      <span class="section__index mono">01.75 — inspect the die</span>
+      <div class="chip3d__grid">
+        <div class="chip3d__intro">
+          <h2 data-reveal>Hold it in<br/><em>your hands.</em></h2>
+          <p data-reveal>A real-time 3D model of the Aurora die package — the CPU tile and the 4×4 systolic accelerator sitting on silicon. Drag to orbit it.</p>
+          <span class="chip3d__hint mono" data-reveal>⊹ drag to rotate</span>
+        </div>
+        <div class="chip3d__stage" data-reveal>
+          <canvas id="chipCanvas"></canvas>
+          <div class="chip3d__loading mono" id="chipLoading">initializing die…</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ STACK / MARQUEE ░░ -->
+    <section class="stack" id="stack">
+      <span class="section__index mono">03 — the stack</span>
+      <div class="marquee">
+        <div class="marquee__track">
+          <span>SYSTEMVERILOG</span><span class="ast">✦</span><span>RISC-V</span><span class="ast">✦</span>
+          <span>AMBA AXI4</span><span class="ast">✦</span><span>RTL-TO-GDSII</span><span class="ast">✦</span>
+          <span>OPENLANE</span><span class="ast">✦</span><span>CADENCE</span><span class="ast">✦</span>
+          <span>SYSTOLIC ARRAYS</span><span class="ast">✦</span><span>STA</span><span class="ast">✦</span>
+        </div>
+        <div class="marquee__track" aria-hidden="true">
+          <span>SYSTEMVERILOG</span><span class="ast">✦</span><span>RISC-V</span><span class="ast">✦</span>
+          <span>AMBA AXI4</span><span class="ast">✦</span><span>RTL-TO-GDSII</span><span class="ast">✦</span>
+          <span>OPENLANE</span><span class="ast">✦</span><span>CADENCE</span><span class="ast">✦</span>
+          <span>SYSTOLIC ARRAYS</span><span class="ast">✦</span><span>STA</span><span class="ast">✦</span>
+        </div>
+      </div>
+      <div class="marquee marquee--rev">
+        <div class="marquee__track">
+          <span>TENSORRT</span><span class="ast">✦</span><span>YOLOV8</span><span class="ast">✦</span>
+          <span>ROS 2</span><span class="ast">✦</span><span>ESP32</span><span class="ast">✦</span>
+          <span>VERILATOR</span><span class="ast">✦</span><span>YOSYS</span><span class="ast">✦</span>
+          <span>CHISEL</span><span class="ast">✦</span><span>CDC</span><span class="ast">✦</span>
+        </div>
+        <div class="marquee__track" aria-hidden="true">
+          <span>TENSORRT</span><span class="ast">✦</span><span>YOLOV8</span><span class="ast">✦</span>
+          <span>ROS 2</span><span class="ast">✦</span><span>ESP32</span><span class="ast">✦</span>
+          <span>VERILATOR</span><span class="ast">✦</span><span>YOSYS</span><span class="ast">✦</span>
+          <span>CHISEL</span><span class="ast">✦</span><span>CDC</span><span class="ast">✦</span>
+        </div>
+      </div>
+
+      <div class="stack__grid">
+        <div class="stack__col" data-reveal>
+          <h4 class="mono">DIGITAL DESIGN</h4>
+          <p>SystemVerilog · Verilog · FSM (Moore/Mealy) · Pipelining &amp; control · Systolic arrays · Sequential MAC datapaths · Dataflow/streaming · RISC-V SoC integration</p>
+        </div>
+        <div class="stack__col" data-reveal>
+          <h4 class="mono">PROTOCOLS / SoC</h4>
+          <p>AMBA AXI4 · AXI4-Lite · AXI4-Stream · AHB · APB · Ready/Valid handshake · Backpressure · Clock-domain crossing</p>
+        </div>
+        <div class="stack__col" data-reveal>
+          <h4 class="mono">ASIC &amp; PHYSICAL</h4>
+          <p>Synthesis · Floorplan · Placement · CTS · Routing · Multi-corner STA · DRC/LVS · PDN · OpenLane/OpenROAD · Genus/Innovus/Virtuoso · Magic · netgen · KLayout</p>
+        </div>
+        <div class="stack__col" data-reveal>
+          <h4 class="mono">AI &amp; EMBEDDED</h4>
+          <p>CNN inference pipelines · TensorRT · YOLOv8 · DeepLabV3+ · Edge-AI · ROS 2 nav &amp; sensor fusion · ESP32 firmware · UART/SPI/I²C/I²S/PWM</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ EXPERIENCE / CERTS ░░ -->
+    <section class="resume">
+      <div class="resume__col">
+        <span class="section__index mono">— experience</span>
+        <div class="resume__item" data-reveal>
+          <div class="resume__time mono">04/2025 – 05/2025</div>
+          <h4>VLSI Design Intern</h4>
+          <p class="resume__org mono">Maven Silicon Pvt. Ltd. · Bengaluru</p>
+          <p>Designed an AMBA-4 compliant AHB-to-APB bridge with FSM-based handshake phases, and an UVM-style constrained-random testbench with functional coverage and waveform debugging.</p>
+        </div>
+      </div>
+      <div class="resume__col">
+        <span class="section__index mono">— recognition</span>
+        <ul class="resume__certs">
+          <li data-reveal><span class="mono">2026</span> Samsung Chip Design Studio — IIIT Bangalore</li>
+          <li data-reveal><span class="mono">2025</span> VLSI Design Internship — Maven Silicon</li>
+          <li data-reveal><span class="mono">2025</span> NPTEL: System Design through Verilog</li>
+          <li data-reveal><span class="mono">2025</span> NASA Space Apps — Galactic Problem Solver</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ░░ CONTACT ░░ -->
+    <section class="contact" id="contact">
+      <span class="section__index mono">04 — contact</span>
+      <p class="contact__pre" data-reveal>Have a chip to tape out, a fabric to integrate, or an idea at the edge of hardware and AI?</p>
+      <a href="mailto:kudumyashwanth@gmail.com" class="contact__mail" data-cursor="link" data-reveal>
+        <span class="contact__mail-text">Let's build silicon</span>
+        <span class="contact__mail-arrow">→</span>
+      </a>
+      <div class="contact__links mono">
+        <a href="mailto:kudumyashwanth@gmail.com" data-cursor="link">kudumyashwanth@gmail.com</a>
+        <a href="tel:+917019233104" data-cursor="link">+91 70192 33104</a>
+        <a href="https://www.linkedin.com/in/yashwanth-kudum-489685289" target="_blank" rel="noopener" data-cursor="link">LinkedIn ↗</a>
+        <a href="https://github.com/kudumyashwanth" target="_blank" rel="noopener" data-cursor="link">GitHub ↗</a>
+        <a class="contact__cv" href="assets/Kudum_Yashwanth_Resume.pdf" download data-cursor="link" data-reveal>
+          <span class="contact__cv-ic">↓</span> download résumé <span class="contact__cv-meta">PDF · 62KB</span>
+        </a>
+      </div>
+
+      <footer class="footer mono">
+        <span>© <span id="year"></span> Kudum Yashwanth</span>
+        <span>Bengaluru, Karnataka · IN</span>
+        <span>Designed in the dark, signed off clean.</span>
+      </footer>
+    </section>
+
+  </main>
+
+  <!-- ░░ PROJECT CASE-STUDY MODAL ░░ -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true">
+      <button class="modal__close mono" data-close data-cursor="link">close ✕</button>
+      <div class="modal__die" id="modalDie"></div>
+      <div class="modal__body">
+        <span class="modal__index mono" id="modalIndex"></span>
+        <h3 class="modal__title" id="modalTitle"></h3>
+        <p class="modal__tag mono" id="modalTag"></p>
+        <div class="modal__copy" id="modalCopy"></div>
+        <ul class="modal__stats mono" id="modalStats"></ul>
+        <ul class="modal__meta mono" id="modalMeta"></ul>
+        <a class="modal__repo mono" id="modalRepo" target="_blank" rel="noopener" data-cursor="link" style="display:none">view source on github ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/webgl.js"></script>
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/extra.js"></script>
+  <script type="module" src="js/chip3d.js"></script>
+  <script type="module" src="js/legendary.js"></script>
+  <script type="module" src="js/hud.js"></script>
+</body>
+</html>

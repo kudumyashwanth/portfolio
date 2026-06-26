@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="g" cx="70%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#16213f"/>
+      <stop offset="55%" stop-color="#0b0d16"/>
+      <stop offset="100%" stop-color="#06070d"/>
+    </radialGradient>
+    <linearGradient id="t" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7aa2f7"/>
+      <stop offset="100%" stop-color="#bb9af7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <!-- circuit traces -->
+  <g stroke="#7aa2f7" stroke-width="1.2" fill="none" opacity="0.18">
+    <path d="M740 80 H1120 V300 M860 80 V200 H1120 M740 520 H1000 V360 H1120 M820 630 V440 H980"/>
+    <circle cx="1120" cy="300" r="4" fill="#7dcfff" stroke="none"/>
+    <circle cx="860" cy="200" r="4" fill="#bb9af7" stroke="none"/>
+    <circle cx="1000" cy="360" r="4" fill="#9ece6a" stroke="none"/>
+  </g>
+  <g font-family="'Space Grotesk',sans-serif">
+    <text x="80" y="270" font-size="38" fill="#565f89" font-family="monospace" letter-spacing="6">SILICON ARCHITECT</text>
+    <text x="74" y="380" font-size="120" font-weight="700" fill="url(#t)">KUDUM</text>
+    <text x="74" y="490" font-size="120" font-weight="700" fill="none" stroke="#c0caf5" stroke-width="1.4">YASHWANTH</text>
+    <text x="80" y="560" font-size="28" fill="#c0caf5" font-family="monospace">VLSI · RISC-V SoC · RTL→GDSII · EMBEDDED AI</text>
+  </g>
+</svg>
