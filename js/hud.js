@@ -167,7 +167,47 @@ const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 })();
 
 /* ============================================================
-   6.  PROJECT THUMBNAIL TILT
+   6.  GUIDED AUTO-TOUR
+   ============================================================ */
+(function tour(){
+  const btn = document.getElementById("tourBtn");
+  if (!btn) return;
+  const order = ["top", "about", "work", "chip", "stack", "contact"];
+  let touring = false, idx = 0, timer = null;
+
+  function go(id){
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (window.__lenis) window.__lenis.scrollTo(el, { duration: 1.6 });
+    else el.scrollIntoView({ behavior: "smooth" });
+  }
+  function label(){
+    btn.innerHTML = touring
+      ? `<span class="tour-btn__ic">■</span> stop <span class="tour-btn__n">${idx + 1}/${order.length}</span>`
+      : `<span class="tour-btn__ic">▶</span> guided tour`;
+  }
+  function step(){
+    if (!touring) return;
+    go(order[idx]); label();
+    timer = setTimeout(() => {
+      idx++;
+      if (idx >= order.length) stop();
+      else step();
+    }, idx === 0 ? 2200 : 3800);
+  }
+  function start(){ touring = true; idx = 0; document.body.classList.add("touring"); step(); }
+  function stop(){ touring = false; clearTimeout(timer); document.body.classList.remove("touring"); label(); }
+
+  btn.addEventListener("click", () => (touring ? stop() : start()));
+  // any manual input cancels the tour
+  ["wheel", "touchmove"].forEach(ev =>
+    addEventListener(ev, () => { if (touring) stop(); }, { passive: true }));
+
+  label();
+})();
+
+/* ============================================================
+   7.  PROJECT THUMBNAIL TILT
    ============================================================ */
 (function tilt(){
   if (window.matchMedia("(pointer:coarse)").matches) return;

@@ -392,3 +392,19 @@ html{ scrollbar-color:#222845 #06070d; scrollbar-width:thin; }
   main{ transform:none !important; }          /* no scroll-skew on touch */
   .grain{ display:none; }                      /* skip the animated grain repaint */
 }
+
+/* ============================================================
+   GUIDED TOUR button
+   ============================================================ */
+.tour-btn{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:1.4rem; z-index:620;
+  display:flex; align-items:center; gap:0.55rem; cursor:none;
+  background:rgba(11,13,22,0.6); border:1px solid var(--line); color:var(--ink);
+  border-radius:99px; padding:0.5rem 1rem; font-size:0.66rem; letter-spacing:0.04em;
+  backdrop-filter:blur(6px); transition:border-color .3s, background .3s, color .3s;
+}
+.tour-btn:hover{ border-color:var(--accent); }
+.tour-btn .tour-btn__ic{ color:var(--accent); font-size:0.7rem; }
+.tour-btn .tour-btn__n{ color:var(--ink-dim); }
+body.touring .tour-btn{ border-color:var(--accent); background:rgba(122,162,247,0.12); }
+@media (max-width:520px){ .tour-btn{ font-size:0.6rem; padding:0.45rem 0.8rem; } }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>404 — signal not found · Kudum Yashwanth</title>
+<link rel="icon" href="/portfolio/assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{ --blue:#7aa2f7; --purple:#bb9af7; --ink:#c0caf5; --dim:#565f89; }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    min-height:100vh; background:#0b0d16; color:var(--ink); overflow:hidden;
+    font-family:"Space Grotesk",sans-serif;
+    display:grid; place-items:center; text-align:center; cursor:default;
+    background-image:radial-gradient(120% 120% at 50% 30%,#13182b 0%,#0b0d16 55%,#06070d 100%);
+  }
+  .mono{ font-family:"JetBrains Mono",monospace; letter-spacing:.05em; }
+  .wrap{ position:relative; z-index:2; padding:2rem; }
+  .tag{ color:var(--dim); font-size:.8rem; letter-spacing:.4em; margin-bottom:1.4rem; }
+  h1{
+    font-size:clamp(6rem,28vw,18rem); font-weight:700; line-height:.85; letter-spacing:-.04em;
+    position:relative; color:var(--ink);
+  }
+  h1::before, h1::after{
+    content:"404"; position:absolute; inset:0; opacity:.8;
+  }
+  h1::before{ color:#f7768e; animation:glitch 2.4s infinite; }
+  h1::after{ color:var(--blue); animation:glitch 3.1s infinite reverse; }
+  @keyframes glitch{
+    0%,92%,100%{ transform:translate(0); clip-path:inset(0 0 95% 0); }
+    93%{ transform:translate(-4px,2px); clip-path:inset(20% 0 40% 0); }
+    95%{ transform:translate(4px,-2px); clip-path:inset(60% 0 10% 0); }
+    97%{ transform:translate(-3px,0); clip-path:inset(10% 0 70% 0); }
+  }
+  .msg{ margin-top:1.5rem; font-size:1.05rem; color:var(--ink); font-weight:300; }
+  .msg em{ color:var(--purple); font-style:normal; }
+  .sub{ margin-top:.6rem; color:var(--dim); font-size:.8rem; }
+  .home{
+    display:inline-flex; align-items:center; gap:.6rem; margin-top:2.5rem;
+    border:1px solid var(--blue); color:var(--ink); text-decoration:none;
+    padding:.8rem 1.6rem; border-radius:99px; font-size:.9rem; transition:background .3s,color .3s,transform .3s;
+  }
+  .home:hover{ background:var(--blue); color:#0b0d16; transform:translateY(-2px); }
+  .scan{ position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:repeating-linear-gradient(0deg, rgba(122,162,247,.03) 0 1px, transparent 1px 3px); }
+  .corner{ position:fixed; width:22px; height:22px; border:1px solid var(--blue); opacity:.5; }
+  .c1{ top:20px; left:20px; border-right:0; border-bottom:0; }
+  .c2{ top:20px; right:20px; border-left:0; border-bottom:0; }
+  .c3{ bottom:20px; left:20px; border-right:0; border-top:0; }
+  .c4{ bottom:20px; right:20px; border-left:0; border-top:0; }
+</style>
+</head>
+<body>
+  <div class="scan"></div>
+  <span class="corner c1"></span><span class="corner c2"></span>
+  <span class="corner c3"></span><span class="corner c4"></span>
+  <div class="wrap">
+    <div class="tag mono">SEGMENTATION FAULT · SIGNAL NOT FOUND</div>
+    <h1>404</h1>
+    <p class="msg">This path failed <em>LVS</em> — no matching net in the layout.</p>
+    <p class="sub mono">the route you took doesn't connect to anything on the die.</p>
+    <a class="home mono" href="/portfolio/">← back to the fabric</a>
+  </div>
+</body>
+</html>
